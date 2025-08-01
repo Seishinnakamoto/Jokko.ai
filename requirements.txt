@@ -1,2 +1,4 @@
-# Nessuna dipendenza esterna richiesta
-# Il server usa solo le librerie standard di Python
+# Multilingual Chatbot Dependencies
+aiohttp==3.9.1
+aiohttp-cors==0.7.0
+schedule==1.2.0
