@@ -1,2 +1,13 @@
-# Nessuna dipendenza esterna richiesta
-# Il server usa solo le librerie standard di Python
+# AI Quiz Generator - Requirements
+# Uses only Python standard library for maximum compatibility
+# No external dependencies required
+
+# Python 3.7+ required for:
+# - f-strings
+# - type hints
+# - modern HTTP server features
+
+# Optional enhancements (not required):
+# requests>=2.25.0  # For external API integration
+# openai>=0.27.0    # For OpenAI GPT integration
+# flask>=2.0.0      # Alternative web framework

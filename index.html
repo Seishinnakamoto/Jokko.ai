@@ -3,53 +3,830 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JOKKO AI</title>
+  <title>AI Quiz Generator - Test Personalizzati con IA</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f4f7;
-      text-align: center;
-      padding: 2rem;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    header {
-      background-color: #00796b;
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+    
+    .app-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header h1 {
+      color: #4a5568;
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .header p {
+      color: #718096;
+      margin-top: 0.5rem;
+    }
+    
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #4a5568;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 1.5rem;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .quiz-container {
+      max-width: 800px;
+      width: 100%;
+    }
+    
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: #f7fafc;
       border-radius: 8px;
     }
-    main {
-      margin-top: 2rem;
+    
+    .timer {
+      background: #e53e3e;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    ul {
-      text-align: left;
-      display: inline-block;
-      margin-top: 1rem;
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 2rem;
     }
-    footer {
-      margin-top: 3rem;
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.3s ease;
+    }
+    
+    .question-card {
+      background: #f7fafc;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .question-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #2d3748;
+    }
+    
+    .options {
+      display: grid;
+      gap: 1rem;
+    }
+    
+    .option {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .option:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    
+    .option.selected {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+    }
+    
+    .option.correct {
+      border-color: #48bb78;
+      background: #48bb78;
+      color: white;
+    }
+    
+    .option.incorrect {
+      border-color: #e53e3e;
+      background: #e53e3e;
+      color: white;
+    }
+    
+    .results-container {
+      text-align: center;
+    }
+    
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    
+    .score-label {
       font-size: 0.8rem;
-      color: #777;
+      opacity: 0.9;
+    }
+    
+    .results-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .stat-card {
+      background: #f7fafc;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #4a5568;
+    }
+    
+    .stat-label {
+      color: #718096;
+      font-size: 0.9rem;
+    }
+    
+    .explanation {
+      background: #f0fff4;
+      border-left: 4px solid #48bb78;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 2rem;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 1rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .header {
+        padding: 1rem;
+      }
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>JOKKO AI</h1>
-    <p>La tua voce, la tua strada. Informazioni chiare per vivere meglio in Italia.</p>
-  </header>
-  <main>
-    <p>Questa chatbot aiuta i migranti africani in Italia a ottenere informazioni su:</p>
-    <ul>
-      <li>Permesso di soggiorno</li>
-      <li>Lavoro</li>
-      <li>Casa</li>
-      <li>Sanità</li>
-      <li>Diritti e leggi italiane</li>
-    </ul>
-    <p>Lingue supportate: Wolof, Francese, Italiano, Inglese, Swahili, Bambara, Hausa, Amarico, Tigrinya, Lingala, Pulaar, Soninke</p>
-  </main>
-  <footer>
-    &copy; 2025 JOKKO - Progetto di AI per l'inclusione
-  </footer>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useCallback } = React;
+
+    // Mock AI service for generating quiz questions
+    const generateQuizQuestions = async (examType, topics, numQuestions) => {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const questionTemplates = {
+        "Informatica": {
+          "Programmazione": [
+            {
+              question: "Quale di questi è un linguaggio di programmazione orientato agli oggetti?",
+              options: ["HTML", "CSS", "Java", "SQL"],
+              correct: 2,
+              explanation: "Java è un linguaggio di programmazione orientato agli oggetti, mentre HTML e CSS sono linguaggi di markup e styling, e SQL è un linguaggio per database."
+            },
+            {
+              question: "Cosa significa 'OOP' nella programmazione?",
+              options: ["Object Oriented Programming", "Open Office Program", "Online Operation Protocol", "Optimal Output Process"],
+              correct: 0,
+              explanation: "OOP sta per Object Oriented Programming (Programmazione Orientata agli Oggetti), un paradigma di programmazione basato su oggetti."
+            }
+          ],
+          "Database": [
+            {
+              question: "Quale comando SQL viene utilizzato per recuperare dati da una tabella?",
+              options: ["INSERT", "SELECT", "UPDATE", "DELETE"],
+              correct: 1,
+              explanation: "SELECT è il comando SQL utilizzato per recuperare dati da una o più tabelle in un database."
+            },
+            {
+              question: "Cos'è una chiave primaria in un database?",
+              options: ["Un campo che può essere nullo", "Un campo che identifica univocamente ogni record", "Un campo di solo lettura", "Un campo numerico"],
+              correct: 1,
+              explanation: "Una chiave primaria è un campo (o combinazione di campi) che identifica univocamente ogni record in una tabella."
+            }
+          ]
+        },
+        "Matematica": {
+          "Algebra": [
+            {
+              question: "Quanto vale x nell'equazione 2x + 5 = 15?",
+              options: ["3", "5", "7", "10"],
+              correct: 1,
+              explanation: "Risolvendo l'equazione: 2x + 5 = 15, quindi 2x = 10, quindi x = 5."
+            },
+            {
+              question: "Qual è il risultato di (a + b)²?",
+              options: ["a² + b²", "a² + 2ab + b²", "a² - b²", "2a + 2b"],
+              correct: 1,
+              explanation: "Il quadrato di un binomio (a + b)² = a² + 2ab + b², seguendo la regola del prodotto notevole."
+            }
+          ],
+          "Geometria": [
+            {
+              question: "Qual è l'area di un cerchio con raggio 3?",
+              options: ["6π", "9π", "12π", "18π"],
+              correct: 1,
+              explanation: "L'area di un cerchio è πr². Con r = 3, l'area è π × 3² = 9π."
+            }
+          ]
+        },
+        "Storia": {
+          "Storia Moderna": [
+            {
+              question: "In che anno è iniziata la Prima Guerra Mondiale?",
+              options: ["1912", "1914", "1916", "1918"],
+              correct: 1,
+              explanation: "La Prima Guerra Mondiale iniziò nel 1914 con l'assassinio dell'arciduca Francesco Ferdinando."
+            }
+          ]
+        }
+      };
+
+      const selectedTopics = topics.split(',').map(t => t.trim());
+      const availableQuestions = [];
+      
+      selectedTopics.forEach(topic => {
+        if (questionTemplates[examType] && questionTemplates[examType][topic]) {
+          availableQuestions.push(...questionTemplates[examType][topic]);
+        }
+      });
+
+      // If no specific questions found, generate generic ones
+      if (availableQuestions.length === 0) {
+        for (let i = 0; i < numQuestions; i++) {
+          availableQuestions.push({
+            question: `Domanda ${i + 1} su ${examType} - ${topics}`,
+            options: ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
+            correct: Math.floor(Math.random() * 4),
+            explanation: `Spiegazione per la domanda ${i + 1} relativa agli argomenti: ${topics}`
+          });
+        }
+      }
+
+      // Shuffle and return requested number of questions
+      const shuffled = availableQuestions.sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, Math.min(numQuestions, shuffled.length));
+    };
+
+    const QuizApp = () => {
+      const [currentScreen, setCurrentScreen] = useState('setup'); // 'setup', 'quiz', 'results'
+      const [quizConfig, setQuizConfig] = useState({
+        examType: '',
+        topics: '',
+        numQuestions: 10
+      });
+      const [questions, setQuestions] = useState([]);
+      const [currentQuestion, setCurrentQuestion] = useState(0);
+      const [selectedAnswers, setSelectedAnswers] = useState({});
+      const [timeLeft, setTimeLeft] = useState(0);
+      const [isLoading, setIsLoading] = useState(false);
+      const [showResults, setShowResults] = useState(false);
+
+      // Timer effect
+      useEffect(() => {
+        if (currentScreen === 'quiz' && timeLeft > 0) {
+          const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+          return () => clearTimeout(timer);
+        } else if (timeLeft === 0 && currentScreen === 'quiz') {
+          handleFinishQuiz();
+        }
+      }, [timeLeft, currentScreen]);
+
+      const formatTime = (seconds) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      };
+
+      const handleStartQuiz = async () => {
+        if (!quizConfig.examType || !quizConfig.topics) {
+          alert('Compila tutti i campi richiesti');
+          return;
+        }
+
+        setIsLoading(true);
+        try {
+          const generatedQuestions = await generateQuizQuestions(
+            quizConfig.examType,
+            quizConfig.topics,
+            quizConfig.numQuestions
+          );
+          setQuestions(generatedQuestions);
+          setTimeLeft(quizConfig.numQuestions * 60); // 1 minute per question
+          setCurrentScreen('quiz');
+        } catch (error) {
+          alert('Errore nella generazione del quiz. Riprova.');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      const handleAnswerSelect = (questionIndex, optionIndex) => {
+        setSelectedAnswers({
+          ...selectedAnswers,
+          [questionIndex]: optionIndex
+        });
+      };
+
+      const handleNextQuestion = () => {
+        if (currentQuestion < questions.length - 1) {
+          setCurrentQuestion(currentQuestion + 1);
+        } else {
+          handleFinishQuiz();
+        }
+      };
+
+      const handleFinishQuiz = () => {
+        setCurrentScreen('results');
+        setShowResults(true);
+      };
+
+      const calculateResults = () => {
+        let correct = 0;
+        let answered = 0;
+        
+        questions.forEach((question, index) => {
+          if (selectedAnswers[index] !== undefined) {
+            answered++;
+            if (selectedAnswers[index] === question.correct) {
+              correct++;
+            }
+          }
+        });
+
+        const percentage = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+        const totalTime = (quizConfig.numQuestions * 60) - timeLeft;
+        
+        return {
+          correct,
+          answered,
+          total: questions.length,
+          percentage,
+          timeSpent: totalTime
+        };
+      };
+
+      const resetQuiz = () => {
+        setCurrentScreen('setup');
+        setQuestions([]);
+        setCurrentQuestion(0);
+        setSelectedAnswers({});
+        setTimeLeft(0);
+        setShowResults(false);
+        setQuizConfig({
+          examType: '',
+          topics: '',
+          numQuestions: 10
+        });
+      };
+
+      // Setup Screen
+      if (currentScreen === 'setup') {
+        return (
+          <div className="app-container">
+            <header className="header">
+              <h1>
+                <i className="fas fa-brain"></i>
+                AI Quiz Generator
+              </h1>
+              <p>Crea quiz personalizzati con intelligenza artificiale</p>
+            </header>
+            
+            <main className="main-content">
+              <div className="card">
+                <h2 style={{marginBottom: '1.5rem', color: '#4a5568'}}>
+                  Configura il tuo Quiz
+                </h2>
+                
+                <div className="form-group">
+                  <label htmlFor="examType">Tipo di Esame</label>
+                  <select
+                    id="examType"
+                    value={quizConfig.examType}
+                    onChange={(e) => setQuizConfig({...quizConfig, examType: e.target.value})}
+                  >
+                    <option value="">Seleziona il tipo di esame</option>
+                    <option value="Informatica">Informatica</option>
+                    <option value="Matematica">Matematica</option>
+                    <option value="Storia">Storia</option>
+                    <option value="Scienze">Scienze</option>
+                    <option value="Letteratura">Letteratura</option>
+                    <option value="Lingue">Lingue Straniere</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="topics">Argomenti (separati da virgola)</label>
+                  <textarea
+                    id="topics"
+                    rows="3"
+                    placeholder="Es: Programmazione, Database, Algoritmi"
+                    value={quizConfig.topics}
+                    onChange={(e) => setQuizConfig({...quizConfig, topics: e.target.value})}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="numQuestions">Numero di Domande</label>
+                  <select
+                    id="numQuestions"
+                    value={quizConfig.numQuestions}
+                    onChange={(e) => setQuizConfig({...quizConfig, numQuestions: parseInt(e.target.value)})}
+                  >
+                    <option value="5">5 domande</option>
+                    <option value="10">10 domande</option>
+                    <option value="15">15 domande</option>
+                    <option value="20">20 domande</option>
+                  </select>
+                </div>
+
+                <button
+                  className="btn"
+                  onClick={handleStartQuiz}
+                  disabled={isLoading}
+                  style={{width: '100%', marginTop: '1rem'}}
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="spinner" style={{width: '20px', height: '20px'}}></div>
+                      Generazione Quiz...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-play"></i>
+                      Inizia Quiz
+                    </>
+                  )}
+                </button>
+              </div>
+            </main>
+          </div>
+        );
+      }
+
+      // Quiz Screen
+      if (currentScreen === 'quiz') {
+        const progress = ((currentQuestion + 1) / questions.length) * 100;
+        const question = questions[currentQuestion];
+
+        return (
+          <div className="app-container">
+            <header className="header">
+              <h1>
+                <i className="fas fa-brain"></i>
+                AI Quiz Generator
+              </h1>
+              <div className="timer">
+                <i className="fas fa-clock"></i>
+                {formatTime(timeLeft)}
+              </div>
+            </header>
+
+            <main className="main-content">
+              <div className="quiz-container">
+                <div className="quiz-header">
+                  <span>Domanda {currentQuestion + 1} di {questions.length}</span>
+                  <span>{quizConfig.examType} - {quizConfig.topics}</span>
+                </div>
+
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{width: `${progress}%`}}></div>
+                </div>
+
+                <div className="question-card">
+                  <div className="question-title">
+                    {question.question}
+                  </div>
+                  
+                  <div className="options">
+                    {question.options.map((option, index) => (
+                      <div
+                        key={index}
+                        className={`option ${selectedAnswers[currentQuestion] === index ? 'selected' : ''}`}
+                        onClick={() => handleAnswerSelect(currentQuestion, index)}
+                      >
+                        <span style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          border: '2px solid currentColor',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.8rem',
+                          fontWeight: 'bold'
+                        }}>
+                          {String.fromCharCode(65 + index)}
+                        </span>
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <button
+                    className="btn"
+                    onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
+                    disabled={currentQuestion === 0}
+                    style={{background: '#718096'}}
+                  >
+                    <i className="fas fa-arrow-left"></i>
+                    Precedente
+                  </button>
+                  
+                  <button
+                    className="btn"
+                    onClick={handleNextQuestion}
+                    disabled={selectedAnswers[currentQuestion] === undefined}
+                  >
+                    {currentQuestion === questions.length - 1 ? (
+                      <>
+                        <i className="fas fa-flag-checkered"></i>
+                        Termina Quiz
+                      </>
+                    ) : (
+                      <>
+                        Successiva
+                        <i className="fas fa-arrow-right"></i>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </main>
+          </div>
+        );
+      }
+
+      // Results Screen
+      if (currentScreen === 'results') {
+        const results = calculateResults();
+        
+        return (
+          <div className="app-container">
+            <header className="header">
+              <h1>
+                <i className="fas fa-brain"></i>
+                AI Quiz Generator
+              </h1>
+              <p>Risultati del tuo quiz</p>
+            </header>
+
+            <main className="main-content">
+              <div className="card">
+                <div className="results-container">
+                  <div className="score-circle">
+                    <div>{results.percentage}%</div>
+                    <div className="score-label">PUNTEGGIO</div>
+                  </div>
+
+                  <div className="results-stats">
+                    <div className="stat-card">
+                      <div className="stat-value">{results.correct}</div>
+                      <div className="stat-label">Risposte Corrette</div>
+                    </div>
+                    <div className="stat-card">
+                      <div className="stat-value">{results.answered}</div>
+                      <div className="stat-label">Domande Risposte</div>
+                    </div>
+                    <div className="stat-card">
+                      <div className="stat-value">{Math.floor(results.timeSpent / 60)}m {results.timeSpent % 60}s</div>
+                      <div className="stat-label">Tempo Impiegato</div>
+                    </div>
+                  </div>
+
+                  <h3 style={{margin: '2rem 0 1rem', color: '#4a5568'}}>
+                    Revisione Risposte
+                  </h3>
+                  
+                  {questions.map((question, index) => (
+                    <div key={index} style={{marginBottom: '1.5rem', textAlign: 'left'}}>
+                      <div style={{fontWeight: '600', marginBottom: '0.5rem'}}>
+                        {index + 1}. {question.question}
+                      </div>
+                      
+                      <div className="options" style={{marginBottom: '0.5rem'}}>
+                        {question.options.map((option, optionIndex) => {
+                          let className = 'option';
+                          if (optionIndex === question.correct) {
+                            className += ' correct';
+                          } else if (selectedAnswers[index] === optionIndex && optionIndex !== question.correct) {
+                            className += ' incorrect';
+                          }
+                          
+                          return (
+                            <div key={optionIndex} className={className}>
+                              <span style={{
+                                width: '20px',
+                                height: '20px',
+                                borderRadius: '50%',
+                                border: '2px solid currentColor',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.7rem',
+                                fontWeight: 'bold'
+                              }}>
+                                {String.fromCharCode(65 + optionIndex)}
+                              </span>
+                              {option}
+                              {optionIndex === question.correct && <i className="fas fa-check" style={{marginLeft: 'auto'}}></i>}
+                              {selectedAnswers[index] === optionIndex && optionIndex !== question.correct && <i className="fas fa-times" style={{marginLeft: 'auto'}}></i>}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      
+                      <div className="explanation">
+                        <strong>Spiegazione:</strong> {question.explanation}
+                      </div>
+                    </div>
+                  ))}
+
+                  <button
+                    className="btn"
+                    onClick={resetQuiz}
+                    style={{width: '100%', marginTop: '2rem'}}
+                  >
+                    <i className="fas fa-redo"></i>
+                    Nuovo Quiz
+                  </button>
+                </div>
+              </div>
+            </main>
+          </div>
+        );
+      }
+    };
+
+    ReactDOM.render(<QuizApp />, document.getElementById('root'));
+  </script>
 </body>
 </html>
