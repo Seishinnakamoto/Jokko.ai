@@ -1,55 +1,181 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JOKKO AI</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f4f7;
-      text-align: center;
-      padding: 2rem;
-    }
-    header {
-      background-color: #00796b;
-      color: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-    }
-    main {
-      margin-top: 2rem;
-    }
-    ul {
-      text-align: left;
-      display: inline-block;
-      margin-top: 1rem;
-    }
-    footer {
-      margin-top: 3rem;
-      font-size: 0.8rem;
-      color: #777;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizAI - Generatore Quiz Personalizzati</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>JOKKO AI</h1>
-    <p>La tua voce, la tua strada. Informazioni chiare per vivere meglio in Italia.</p>
-  </header>
-  <main>
-    <p>Questa chatbot aiuta i migranti africani in Italia a ottenere informazioni su:</p>
-    <ul>
-      <li>Permesso di soggiorno</li>
-      <li>Lavoro</li>
-      <li>Casa</li>
-      <li>Sanità</li>
-      <li>Diritti e leggi italiane</li>
-    </ul>
-    <p>Lingue supportate: Wolof, Francese, Italiano, Inglese, Swahili, Bambara, Hausa, Amarico, Tigrinya, Lingala, Pulaar, Soninke</p>
-  </main>
-  <footer>
-    &copy; 2025 JOKKO - Progetto di AI per l'inclusione
-  </footer>
+    <div class="container">
+        <!-- Schermata di configurazione -->
+        <div id="setup-screen" class="screen active">
+            <div class="header">
+                <h1><i class="fas fa-brain"></i> QuizAI</h1>
+                <p>Genera quiz personalizzati con l'intelligenza artificiale</p>
+            </div>
+            
+            <div class="setup-form">
+                <div class="form-group">
+                    <label for="exam-type">
+                        <i class="fas fa-graduation-cap"></i>
+                        Tipo di Esame
+                    </label>
+                    <select id="exam-type" required>
+                        <option value="">Seleziona il tipo di esame...</option>
+                        <option value="universitario">Universitario</option>
+                        <option value="superiori">Scuole Superiori</option>
+                        <option value="certificazione">Certificazione Professionale</option>
+                        <option value="concorso">Concorso Pubblico</option>
+                        <option value="patente">Patente di Guida</option>
+                        <option value="altro">Altro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="topics">
+                        <i class="fas fa-book"></i>
+                        Argomenti di Studio
+                    </label>
+                    <textarea id="topics" placeholder="Inserisci gli argomenti separati da virgola (es: matematica, fisica, chimica)..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="num-questions">
+                        <i class="fas fa-list-ol"></i>
+                        Numero di Domande
+                    </label>
+                    <input type="range" id="num-questions" min="5" max="50" value="10" step="5">
+                    <span id="question-count">10</span> domande
+                </div>
+
+                <div class="form-group">
+                    <label for="difficulty">
+                        <i class="fas fa-chart-line"></i>
+                        Livello di Difficoltà
+                    </label>
+                    <select id="difficulty">
+                        <option value="facile">Facile</option>
+                        <option value="medio" selected>Medio</option>
+                        <option value="difficile">Difficile</option>
+                        <option value="misto">Misto</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="time-limit">
+                        <i class="fas fa-clock"></i>
+                        Tempo Limite (minuti)
+                    </label>
+                    <input type="range" id="time-limit" min="5" max="60" value="15" step="5">
+                    <span id="time-display">15</span> minuti
+                </div>
+
+                <button id="generate-quiz" class="btn-primary">
+                    <i class="fas fa-magic"></i>
+                    Genera Quiz
+                </button>
+            </div>
+        </div>
+
+        <!-- Schermata di caricamento -->
+        <div id="loading-screen" class="screen">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <h2>Generazione Quiz in Corso...</h2>
+                <p>L'intelligenza artificiale sta creando domande personalizzate per te</p>
+                <div class="loading-progress">
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schermata del quiz -->
+        <div id="quiz-screen" class="screen">
+            <div class="quiz-header">
+                <div class="quiz-info">
+                    <span id="current-question">1</span> / <span id="total-questions">10</span>
+                </div>
+                <div class="timer">
+                    <i class="fas fa-clock"></i>
+                    <span id="time-remaining">15:00</span>
+                </div>
+                <div class="score">
+                    Punteggio: <span id="current-score">0</span>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-number">Domanda <span id="q-number">1</span></div>
+                <div class="question-text" id="question-text"></div>
+                
+                <div class="answers-container" id="answers-container">
+                    <!-- Le risposte verranno generate dinamicamente -->
+                </div>
+
+                <div class="question-actions">
+                    <button id="prev-question" class="btn-secondary" disabled>
+                        <i class="fas fa-arrow-left"></i>
+                        Precedente
+                    </button>
+                    <button id="next-question" class="btn-primary" disabled>
+                        Prossima
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button id="finish-quiz" class="btn-success" style="display: none;">
+                        <i class="fas fa-check"></i>
+                        Termina Quiz
+                    </button>
+                </div>
+            </div>
+
+            <div class="progress-indicator">
+                <div class="progress-bar-quiz">
+                    <div class="progress-fill" id="quiz-progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schermata dei risultati -->
+        <div id="results-screen" class="screen">
+            <div class="results-header">
+                <h2><i class="fas fa-trophy"></i> Risultati Quiz</h2>
+                <div class="final-score">
+                    <div class="score-circle">
+                        <span id="final-percentage">0</span>%
+                    </div>
+                    <div class="score-details">
+                        <p><span id="correct-answers">0</span> / <span id="total-answers">0</span> risposte corrette</p>
+                        <p>Punteggio: <span id="final-points">0</span> punti</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-analysis">
+                <h3>Analisi Prestazione</h3>
+                <div id="performance-chart"></div>
+                <div class="performance-text" id="performance-feedback"></div>
+            </div>
+
+            <div class="detailed-results">
+                <h3>Revisione Domande</h3>
+                <div id="questions-review"></div>
+            </div>
+
+            <div class="results-actions">
+                <button id="restart-quiz" class="btn-primary">
+                    <i class="fas fa-redo"></i>
+                    Nuovo Quiz
+                </button>
+                <button id="review-answers" class="btn-secondary">
+                    <i class="fas fa-eye"></i>
+                    Rivedi Risposte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
