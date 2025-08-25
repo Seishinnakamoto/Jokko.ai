@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizAI - Genera Quiz Personalizzati con l'Intelligenza Artificiale</title>
+    <meta name="description" content="Crea quiz personalizzati in pochi secondi con l'AI. Perfetto per esami, studio e formazione.">
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-brain"></i>
+                <span>QuizAI</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#features" class="nav-link">Funzionalità</a>
+                <a href="#about" class="nav-link">Chi Siamo</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Genera quiz personalizzati con l'AI 
+                    <span class="highlight">in pochi secondi</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Crea test su misura per i tuoi studi, esami o formazione professionale. 
+                    L'intelligenza artificiale genera domande pertinenti e sfidanti.
+                </p>
+                <button class="cta-button" id="create-quiz-btn" aria-label="Inizia a creare il tuo quiz personalizzato">
+                    <i class="fas fa-rocket"></i>
+                    Crea il mio quiz
+                </button>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Quiz creati</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Argomenti</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">95%</span>
+                        <span class="stat-label">Soddisfazione</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="quiz-preview">
+                    <div class="quiz-card">
+                        <div class="quiz-header">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Quiz Preview</span>
+                        </div>
+                        <div class="quiz-question">
+                            Quale principio della programmazione...?
+                        </div>
+                        <div class="quiz-options">
+                            <div class="option">A) Encapsulation</div>
+                            <div class="option">B) Inheritance</div>
+                            <div class="option active">C) Polymorphism</div>
+                        </div>
+                        <div class="quiz-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                            <span>3/5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Setup Form -->
+    <section id="quiz-setup" class="quiz-setup hidden">
+        <div class="container">
+            <div class="setup-header">
+                <h2>Personalizza il tuo quiz</h2>
+                <p>Configura il quiz perfetto per le tue esigenze</p>
+            </div>
+            
+            <form class="setup-form" id="quiz-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="exam-type">Tipo di esame/argomento</label>
+                        <select id="exam-type" name="examType" required aria-describedby="exam-type-help">
+                            <option value="">Seleziona un argomento</option>
+                            <option value="programming">Programmazione</option>
+                            <option value="mathematics">Matematica</option>
+                            <option value="history">Storia</option>
+                            <option value="science">Scienze</option>
+                            <option value="literature">Letteratura</option>
+                            <option value="languages">Lingue Straniere</option>
+                            <option value="business">Business & Marketing</option>
+                            <option value="medicine">Medicina</option>
+                            <option value="law">Diritto</option>
+                            <option value="custom">Altro (specifica sotto)</option>
+                        </select>
+                        <small id="exam-type-help">Scegli l'area di studio principale</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="specific-topics">Argomenti specifici</label>
+                        <textarea 
+                            id="specific-topics" 
+                            name="topics" 
+                            placeholder="Es: JavaScript ES6, React Hooks, API REST..."
+                            rows="3"
+                            aria-describedby="topics-help"
+                        ></textarea>
+                        <small id="topics-help">Specifica gli argomenti che vuoi includere nel quiz</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="difficulty">Livello di difficoltà</label>
+                        <div class="difficulty-selector">
+                            <input type="radio" id="easy" name="difficulty" value="easy">
+                            <label for="easy" class="difficulty-option">
+                                <i class="fas fa-seedling"></i>
+                                <span>Principiante</span>
+                            </label>
+                            
+                            <input type="radio" id="medium" name="difficulty" value="medium" checked>
+                            <label for="medium" class="difficulty-option">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Intermedio</span>
+                            </label>
+                            
+                            <input type="radio" id="hard" name="difficulty" value="hard">
+                            <label for="hard" class="difficulty-option">
+                                <i class="fas fa-trophy"></i>
+                                <span>Avanzato</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question-count">Numero di domande</label>
+                        <div class="number-input">
+                            <button type="button" class="number-btn" id="decrease-btn" aria-label="Diminuisci numero domande">-</button>
+                            <input type="number" id="question-count" name="questionCount" value="10" min="5" max="50" aria-describedby="count-help">
+                            <button type="button" class="number-btn" id="increase-btn" aria-label="Aumenta numero domande">+</button>
+                        </div>
+                        <small id="count-help">Da 5 a 50 domande</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time-limit">Tempo limite (minuti)</label>
+                        <select id="time-limit" name="timeLimit" aria-describedby="time-help">
+                            <option value="0">Nessun limite</option>
+                            <option value="5">5 minuti</option>
+                            <option value="10">10 minuti</option>
+                            <option value="15">15 minuti</option>
+                            <option value="30">30 minuti</option>
+                            <option value="60">60 minuti</option>
+                        </select>
+                        <small id="time-help">Imposta un limite di tempo opzionale</small>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Indietro
+                    </button>
+                    <button type="submit" class="btn-primary" id="generate-btn">
+                        <i class="fas fa-magic"></i>
+                        Genera Quiz
+                        <div class="loading-spinner hidden"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Perché scegliere QuizAI?</h2>
+                <p>La piattaforma più avanzata per la creazione di quiz personalizzati</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Intelligenza Artificiale</h3>
+                    <p>Algoritmi avanzati generano domande pertinenti e sfidanti basate sui tuoi argomenti specifici.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Responsive Design</h3>
+                    <p>Funziona perfettamente su tutti i dispositivi - desktop, tablet e smartphone.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Analisi Dettagliate</h3>
+                    <p>Ricevi feedback completi sulle tue performance con suggerimenti per migliorare.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Veloce & Efficiente</h3>
+                    <p>Genera quiz complessi in pochi secondi. Risparmia tempo nella preparazione.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Sicuro & Privato</h3>
+                    <p>I tuoi dati sono protetti. Privacy garantita e nessuna informazione condivisa.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <h3>Quiz Illimitati</h3>
+                    <p>Crea tutti i quiz che vuoi senza limitazioni. Perfetto per studio intensivo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-brain"></i>
+                        <span>QuizAI</span>
+                    </div>
+                    <p>La piattaforma intelligente per quiz personalizzati che ti aiuta a studiare meglio e più velocemente.</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Prodotto</h4>
+                        <a href="#features">Funzionalità</a>
+                        <a href="#pricing">Prezzi</a>
+                        <a href="#api">API</a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Supporto</h4>
+                        <a href="#help">Centro Aiuto</a>
+                        <a href="#contact">Contatti</a>
+                        <a href="#faq">FAQ</a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Legale</h4>
+                        <a href="#privacy">Privacy Policy</a>
+                        <a href="#terms">Termini di Servizio</a>
+                        <a href="#cookies">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 QuizAI. Tutti i diritti riservati.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner-large"></div>
+            <h3>Generando il tuo quiz...</h3>
+            <p>L'AI sta creando domande personalizzate per te</p>
+        </div>
+    </div>
+
+    <script>
+        // Navigation toggle
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                navToggle.classList.toggle('active');
+            });
+        }
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    if (navMenu) {
+                        navMenu.classList.remove('active');
+                        navToggle.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // CTA button click
+        document.getElementById('create-quiz-btn').addEventListener('click', () => {
+            document.getElementById('home').classList.add('hidden');
+            document.getElementById('quiz-setup').classList.remove('hidden');
+        });
+
+        // Back button
+        document.getElementById('back-btn').addEventListener('click', () => {
+            document.getElementById('quiz-setup').classList.add('hidden');
+            document.getElementById('home').classList.remove('hidden');
+        });
+
+        // Number input controls
+        const decreaseBtn = document.getElementById('decrease-btn');
+        const increaseBtn = document.getElementById('increase-btn');
+        const questionCountInput = document.getElementById('question-count');
+
+        if (decreaseBtn && increaseBtn && questionCountInput) {
+            decreaseBtn.addEventListener('click', () => {
+                const current = parseInt(questionCountInput.value);
+                if (current > 5) {
+                    questionCountInput.value = current - 1;
+                }
+            });
+
+            increaseBtn.addEventListener('click', () => {
+                const current = parseInt(questionCountInput.value);
+                if (current < 50) {
+                    questionCountInput.value = current + 1;
+                }
+            });
+        }
+
+        // Form submission
+        document.getElementById('quiz-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const quizData = {
+                examType: formData.get('examType'),
+                topics: formData.get('topics'),
+                difficulty: formData.get('difficulty'),
+                questionCount: parseInt(formData.get('questionCount')),
+                timeLimit: parseInt(formData.get('timeLimit'))
+            };
+
+            // Validate form
+            if (!quizData.examType) {
+                alert('Seleziona un tipo di esame');
+                return;
+            }
+
+            // Show loading state
+            const generateBtn = document.getElementById('generate-btn');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            
+            generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+            generateBtn.disabled = true;
+            loadingOverlay.classList.remove('hidden');
+
+            // Simulate API call
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+                alert(`🎉 Quiz generato con successo!
+
+📚 Argomento: ${quizData.examType}
+📝 Domande: ${quizData.questionCount}
+⏱️ Tempo: ${quizData.timeLimit || 'Illimitato'} minuti
+🎯 Difficoltà: ${quizData.difficulty}
+
+Il tuo quiz personalizzato è pronto!`);
+                
+                // Reset button
+                generateBtn.innerHTML = '<i class="fas fa-magic"></i> Genera Quiz';
+                generateBtn.disabled = false;
+            }, 3000);
+        });
+
+        // Add floating animation to hero visual on scroll
+        let ticking = false;
+
+        function updateFloatingAnimation() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.quiz-card');
+            if (parallax) {
+                const speed = scrolled * 0.3;
+                parallax.style.transform = `translateY(${speed}px)`;
+            }
+            ticking = false;
+        }
+
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateFloatingAnimation);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', requestTick);
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (navMenu && navMenu.classList.contains('active') && 
+                !navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
